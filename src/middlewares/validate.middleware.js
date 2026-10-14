@@ -65,6 +65,49 @@ export const generateExamSchema = z.object({
   })
 });
 
+export const updateQuestionSchema = z.object({
+  body: z.object({
+    enunciado: z.string().min(5, 'El enunciado debe tener al menos 5 caracteres').optional(),
+    tipo_pregunta: z.enum(['OPCION_MULTIPLE', 'VERDADERO_FALSO', 'ABIERTA', 'MIXTA']).optional(),
+    nivel_bloom: z.enum(['Recordar', 'Comprender', 'Aplicar', 'Analizar', 'Evaluar', 'Crear']).optional(),
+    puntaje: z.coerce.number().positive('El puntaje debe ser mayor a 0').optional(),
+    justificacion_pedagogica: z.string().optional(),
+    orden: z.coerce.number().int().positive().optional()
+  })
+});
+
+export const updateOptionSchema = z.object({
+  body: z.object({
+    texto_opcion: z.string().min(1, 'El texto de la opción no puede estar vacío').optional(),
+    es_correcta: z.boolean().optional(),
+    retroalimentacion: z.string().optional(),
+    marcar_como_unica_correcta: z.boolean().optional(),
+    orden: z.coerce.number().int().positive().optional()
+  })
+});
+
+export const addQuestionSchema = z.object({
+  body: z.object({
+    enunciado: z.string({ required_error: 'El enunciado de la pregunta es obligatorio' }).min(5, 'El enunciado debe tener al menos 5 caracteres'),
+    tipo_pregunta: z.enum(['OPCION_MULTIPLE', 'VERDADERO_FALSO', 'ABIERTA', 'MIXTA']).optional().default('OPCION_MULTIPLE'),
+    nivel_bloom: z.enum(['Recordar', 'Comprender', 'Aplicar', 'Analizar', 'Evaluar', 'Crear']).optional().default('Comprender'),
+    puntaje: z.coerce.number().positive('El puntaje debe ser un valor positivo').optional().default(1.0),
+    justificacion_pedagogica: z.string().optional(),
+    opciones: z.array(z.object({
+      texto_opcion: z.string({ required_error: 'El texto de la opción es obligatorio' }).min(1, 'La opción no puede estar vacía'),
+      es_correcta: z.boolean().optional().default(false),
+      retroalimentacion: z.string().optional()
+    })).optional().default([])
+  })
+});
+
+export const approveExamSchema = z.object({
+  body: z.object({
+    numero_version: z.string().min(1).max(20).optional(),
+    comentarios: z.string().optional()
+  }).optional().default({})
+});
+
 export const validateSchema = (schema) => (req, res, next) => {
   try {
     schema.parse({

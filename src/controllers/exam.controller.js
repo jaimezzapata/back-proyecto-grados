@@ -62,6 +62,76 @@ class ExamController {
       next(error);
     }
   }
+
+  // ==========================================
+  // Endpoints Human-in-the-Loop (Edición Docente)
+  // ==========================================
+
+  async updateQuestion(req, res, next) {
+    try {
+      const docenteId = req.user.id;
+      const { id, questionId } = req.params;
+      const preguntaActualizada = await examService.updateQuestion(id, questionId, docenteId, req.body);
+      return successResponse(res, preguntaActualizada, 'Pregunta actualizada exitosamente');
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async deleteQuestion(req, res, next) {
+    try {
+      const docenteId = req.user.id;
+      const { id, questionId } = req.params;
+      await examService.deleteQuestion(id, questionId, docenteId);
+      return successResponse(res, null, 'Pregunta eliminada de la evaluación exitosamente');
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async addQuestion(req, res, next) {
+    try {
+      const docenteId = req.user.id;
+      const { id } = req.params;
+      const nuevaPregunta = await examService.addQuestion(id, docenteId, req.body);
+      return successResponse(res, nuevaPregunta, 'Pregunta agregada a la evaluación exitosamente', 201);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async updateOption(req, res, next) {
+    try {
+      const docenteId = req.user.id;
+      const { id, questionId, optionId } = req.params;
+      const opcionActualizada = await examService.updateOption(id, questionId, optionId, docenteId, req.body);
+      return successResponse(res, opcionActualizada, 'Opción de respuesta actualizada exitosamente');
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async approve(req, res, next) {
+    try {
+      const docenteId = req.user.id;
+      const { id } = req.params;
+      const resultado = await examService.approveExam(id, docenteId, req.body);
+      return successResponse(res, resultado, resultado.mensaje, 201);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getVersions(req, res, next) {
+    try {
+      const docenteId = req.user.id;
+      const { id } = req.params;
+      const versiones = await examService.getExamVersions(id, docenteId);
+      return successResponse(res, versiones, 'Historial de versiones recuperado exitosamente');
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new ExamController();
