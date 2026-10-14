@@ -7,6 +7,7 @@ import authRoutes from './routers/auth.routes.js';
 import courseRoutes from './routers/course.routes.js';
 import materialRoutes from './routers/material.routes.js';
 import examRoutes from './routers/exam.routes.js';
+import exportRoutes from './routers/export.routes.js';
 import { errorHandler } from './middlewares/error.middleware.js';
 import { NotFoundError } from './helpers/errors.js';
 
@@ -37,6 +38,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/academic', courseRoutes);
 app.use('/api/materials', materialRoutes);
 app.use('/api/exams', examRoutes);
+app.use('/api/exports', exportRoutes);
 
 /**
  * @openapi
