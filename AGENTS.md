@@ -154,4 +154,11 @@ $$\text{Rutas (routers)} \longrightarrow \text{Middlewares} \longrightarrow \tex
    * Formato: `<tipo>(<alcance>): <descripción>`
    * Tipos: `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`, `test:`, `style:`.
 
+3. **Estructura de Repositorios Independientes:**
+   * El proyecto se gestiona exclusivamente a través de dos repositorios Git independientes:
+     * Backend: `https://github.com/jaimezzapata/back-proyecto-grados.git` (en `backend/`).
+     * Frontend: `https://github.com/jaimezzapata/front-proyecto-grados.git` (en `frontend/`).
+   * No se utiliza ni se realizan commits en el repositorio global de la raíz; todo versionamiento se ejecuta directamente dentro de cada proyecto respectivo (`backend/` o `frontend/`).
+
+
 
