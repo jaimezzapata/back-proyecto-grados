@@ -1,6 +1,9 @@
 import OpenAI from 'openai';
+import dotenv from 'dotenv';
 import promptBuilderService from './promptBuilder.service.js';
 import aiParserService from './aiParser.service.js';
+
+dotenv.config();
 
 class AIRouterService {
 
@@ -38,7 +41,7 @@ class AIRouterService {
           baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai/',
           apiKey: process.env.GEMINI_API_KEY
         }),
-        model: process.env.GEMINI_MODEL || 'gemini-1.5-flash',
+        model: process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite',
         temperature: 0.3
       });
     }
@@ -78,7 +81,7 @@ class AIRouterService {
           baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai/',
           apiKey: process.env.GEMINI_API_KEY
         }),
-        model: process.env.GEMINI_MODEL || 'gemini-1.5-flash',
+        model: process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite',
         temperature: 0.3
       });
     }
