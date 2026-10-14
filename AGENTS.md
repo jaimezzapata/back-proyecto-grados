@@ -142,3 +142,16 @@ $$\text{Rutas (routers)} \longrightarrow \text{Middlewares} \longrightarrow \tex
      ```
    * Ningún controlador o servicio debe ejecutarse si la bandera está inactiva, protegiendo recursos, tokens de IA y procesamiento.
 
+---
+
+## 8. Política de Commits Atómicos y Frecuentes (Git)
+
+1. **Obligatoriedad de Commits Atómicos:**
+   * Se debe realizar commit ante cada avance significativo, atómico y probado (ej. nuevo endpoint, corrección de bug, migración de modelo o documentación).
+   * No acumular múltiples responsabilidades en un solo commit.
+
+2. **Convención Convencional Estricta:**
+   * Formato: `<tipo>(<alcance>): <descripción>`
+   * Tipos: `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`, `test:`, `style:`.
+
+
