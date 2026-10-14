@@ -6,6 +6,7 @@ import { syncDB } from './models/index.js';
 import authRoutes from './routers/auth.routes.js';
 import courseRoutes from './routers/course.routes.js';
 import materialRoutes from './routers/material.routes.js';
+import examRoutes from './routers/exam.routes.js';
 import { errorHandler } from './middlewares/error.middleware.js';
 
 import { getFeaturesState } from './config/features.js';
@@ -34,6 +35,7 @@ app.get('/api/docs.json', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/academic', courseRoutes);
 app.use('/api/materials', materialRoutes);
+app.use('/api/exams', examRoutes);
 
 /**
  * @openapi

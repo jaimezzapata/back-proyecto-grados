@@ -51,6 +51,20 @@ export const createAsignaturaSchema = z.object({
   })
 });
 
+export const generateExamSchema = z.object({
+  body: z.object({
+    asignatura_id: z.coerce.number({ required_error: 'El ID de la asignatura es requerido' }).positive(),
+    material_id: z.string().uuid().optional(),
+    texto_manual: z.string().optional(),
+    nivel_bloom: z.enum(['Recordar', 'Comprender', 'Aplicar', 'Analizar', 'Evaluar', 'Crear']).optional().default('Comprender'),
+    cantidad_preguntas: z.coerce.number().min(1).max(30).optional().default(5),
+    tipo_preguntas: z.enum(['OPCION_MULTIPLE', 'VERDADERO_FALSO', 'ABIERTA', 'MIXTA']).optional().default('OPCION_MULTIPLE'),
+    tema_especifico: z.string().optional(),
+    instrucciones_adicionales: z.string().optional(),
+    titulo_personalizado: z.string().optional()
+  })
+});
+
 export const validateSchema = (schema) => (req, res, next) => {
   try {
     schema.parse({
