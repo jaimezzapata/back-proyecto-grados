@@ -7,10 +7,20 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Node modules
 node_modules
 dist
 dist-ssr
 *.local
+
+# Environment variables (CRÍTICO: nunca subir a Git)
+.env
+.env.*
+!.env.example
+
+# Archivos subidos por usuarios (Multer)
+uploads/
+temp/
 
 # Editor directories and files
 .vscode/*
