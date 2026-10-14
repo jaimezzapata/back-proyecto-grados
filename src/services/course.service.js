@@ -1,4 +1,5 @@
 import courseRepository from '../repositories/course.repository.js';
+import { NotFoundError, ConflictError } from '../helpers/errors.js';
 
 class CourseService {
 
@@ -17,7 +18,7 @@ class CourseService {
   async getAsignaturaById(id) {
     const asignatura = await courseRepository.findAsignaturaById(id);
     if (!asignatura) {
-      throw new Error('Asignatura no encontrada');
+      throw new NotFoundError('Asignatura', id);
     }
     return asignatura;
   }
@@ -32,7 +33,7 @@ class CourseService {
     // Validar que la asignatura exista
     const asignatura = await courseRepository.findAsignaturaById(asignatura_id);
     if (!asignatura) {
-      throw new Error('La asignatura indicada no existe');
+      throw new NotFoundError('Asignatura', asignatura_id);
     }
 
     const [asignacion, created] = await courseRepository.asignarDocente(
@@ -52,7 +53,10 @@ class CourseService {
   async createAsignatura(data) {
     const existing = await courseRepository.findAsignaturaByCodigo(data.codigo);
     if (existing) {
-      throw new Error(`Ya existe una asignatura con el código ${data.codigo}`);
+      throw new ConflictError(
+        `Ya existe una asignatura registrada con el código '${data.codigo}'. Ingrese un código único.`,
+        { codigo: data.codigo }
+      );
     }
     return await courseRepository.createAsignatura(data);
   }

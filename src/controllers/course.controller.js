@@ -1,73 +1,73 @@
 import courseService from '../services/course.service.js';
-import { successResponse, errorResponse } from '../helpers/response.helper.js';
+import { successResponse } from '../helpers/response.helper.js';
 
 class CourseController {
 
-  async getProgramas(req, res) {
+  async getProgramas(req, res, next) {
     try {
       const programas = await courseService.getProgramas();
       return successResponse(res, programas, 'Programas académicos obtenidos correctamente');
     } catch (error) {
-      return errorResponse(res, error.message, 500);
+      next(error);
     }
   }
 
-  async getAsignaturas(req, res) {
+  async getAsignaturas(req, res, next) {
     try {
       const { programa_id } = req.query;
       const asignaturas = await courseService.getAsignaturas(programa_id);
       return successResponse(res, asignaturas, 'Asignaturas obtenidas correctamente');
     } catch (error) {
-      return errorResponse(res, error.message, 500);
+      next(error);
     }
   }
 
-  async getAsignaturaById(req, res) {
+  async getAsignaturaById(req, res, next) {
     try {
       const { id } = req.params;
       const asignatura = await courseService.getAsignaturaById(id);
       return successResponse(res, asignatura, 'Detalle de asignatura obtenido');
     } catch (error) {
-      return errorResponse(res, error.message, 404);
+      next(error);
     }
   }
 
-  async getMisAsignaturas(req, res) {
+  async getMisAsignaturas(req, res, next) {
     try {
       const docenteId = req.user.id;
       const { periodo } = req.query;
       const misAsignaturas = await courseService.getAsignaturasDocente(docenteId, periodo);
       return successResponse(res, misAsignaturas, 'Asignaturas del docente obtenidas correctamente');
     } catch (error) {
-      return errorResponse(res, error.message, 500);
+      next(error);
     }
   }
 
-  async vincularAsignatura(req, res) {
+  async vincularAsignatura(req, res, next) {
     try {
       const docenteId = req.user.id;
       const resultado = await courseService.vincularDocenteAsignatura(docenteId, req.body);
       return successResponse(res, resultado, 'Asignatura asignada al docente exitosamente', 201);
     } catch (error) {
-      return errorResponse(res, error.message, 400);
+      next(error);
     }
   }
 
-  async createPrograma(req, res) {
+  async createPrograma(req, res, next) {
     try {
       const nuevoPrograma = await courseService.createPrograma(req.body);
       return successResponse(res, nuevoPrograma, 'Programa creado exitosamente', 201);
     } catch (error) {
-      return errorResponse(res, error.message, 400);
+      next(error);
     }
   }
 
-  async createAsignatura(req, res) {
+  async createAsignatura(req, res, next) {
     try {
       const nuevaAsignatura = await courseService.createAsignatura(req.body);
       return successResponse(res, nuevaAsignatura, 'Asignatura creada exitosamente', 201);
     } catch (error) {
-      return errorResponse(res, error.message, 400);
+      next(error);
     }
   }
 }

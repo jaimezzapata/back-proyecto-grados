@@ -3,22 +3,23 @@ import fs from 'fs';
 import materialRepository from '../repositories/material.repository.js';
 import courseRepository from '../repositories/course.repository.js';
 import { extractTextFromFile } from '../helpers/textExtractor.js';
+import { BadRequestError, NotFoundError, ForbiddenError } from '../helpers/errors.js';
 
 class MaterialService {
 
   async uploadAndProcessMaterial(docenteId, file, body) {
     if (!file) {
-      throw new Error('Debe adjuntar un archivo válido (.pdf, .docx, .txt)');
+      throw new BadRequestError('Debe adjuntar un archivo válido en formato PDF, Word (DOCX) o TXT.');
     }
 
     const { asignatura_id, titulo } = body;
     if (!asignatura_id) {
-      throw new Error('El ID de la asignatura es requerido');
+      throw new BadRequestError('El ID de la asignatura (asignatura_id) es obligatorio.');
     }
 
     const asignatura = await courseRepository.findAsignaturaById(asignatura_id);
     if (!asignatura) {
-      throw new Error('La asignatura especificada no existe');
+      throw new NotFoundError('Asignatura', asignatura_id);
     }
 
     const ext = path.extname(file.originalname).toLowerCase().replace('.', '');
@@ -58,11 +59,14 @@ class MaterialService {
   async getMaterialById(id, docenteId) {
     const material = await materialRepository.findById(id);
     if (!material) {
-      throw new Error('Material no encontrado');
+      throw new NotFoundError('Material de clase', id);
     }
 
     if (material.docente_id !== docenteId) {
-      throw new Error('No tiene autorización para acceder a este material');
+      throw new ForbiddenError(
+        'Acceso denegado: este material de clase pertenece a otro docente y no puede ser consultado.',
+        { material_id: id }
+      );
     }
 
     return material;
@@ -71,11 +75,14 @@ class MaterialService {
   async deleteMaterial(id, docenteId) {
     const material = await materialRepository.findById(id);
     if (!material) {
-      throw new Error('Material no encontrado');
+      throw new NotFoundError('Material de clase', id);
     }
 
     if (material.docente_id !== docenteId) {
-      throw new Error('No tiene autorización para eliminar este material');
+      throw new ForbiddenError(
+        'Acceso denegado: no tiene permisos para eliminar un material de clase que pertenece a otro docente.',
+        { material_id: id }
+      );
     }
 
     // Intentar remover el archivo físico del disco
@@ -83,7 +90,7 @@ class MaterialService {
       try {
         fs.unlinkSync(material.archivo_url);
       } catch (err) {
-        console.warn('No se pudo eliminar el archivo físico:', err.message);
+        console.warn('No se pudo eliminar el archivo físico del disco:', err.message);
       }
     }
 

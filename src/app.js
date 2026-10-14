@@ -8,6 +8,7 @@ import courseRoutes from './routers/course.routes.js';
 import materialRoutes from './routers/material.routes.js';
 import examRoutes from './routers/exam.routes.js';
 import { errorHandler } from './middlewares/error.middleware.js';
+import { NotFoundError } from './helpers/errors.js';
 
 import { getFeaturesState } from './config/features.js';
 import swaggerUi from 'swagger-ui-express';
@@ -86,11 +87,8 @@ app.get('/health', (req, res) => {
 });
 
 // Manejo 404
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    error: `Endpoint no encontrado: ${req.method} ${req.originalUrl}`
-  });
+app.use((req, res, next) => {
+  next(new NotFoundError('Endpoint o recurso', `${req.method} ${req.originalUrl}`));
 });
 
 // Manejo centralizado de errores

@@ -1,19 +1,19 @@
 import materialService from '../services/material.service.js';
-import { successResponse, errorResponse } from '../helpers/response.helper.js';
+import { successResponse } from '../helpers/response.helper.js';
 
 class MaterialController {
 
-  async upload(req, res) {
+  async upload(req, res, next) {
     try {
       const docenteId = req.user.id;
       const material = await materialService.uploadAndProcessMaterial(docenteId, req.file, req.body);
       return successResponse(res, material, 'Material de clase subido y procesado exitosamente', 201);
     } catch (error) {
-      return errorResponse(res, error.message, 400);
+      next(error);
     }
   }
 
-  async getMisMateriales(req, res) {
+  async getMisMateriales(req, res, next) {
     try {
       const docenteId = req.user.id;
       const { asignatura_id } = req.query;
@@ -23,31 +23,29 @@ class MaterialController {
       const materiales = await materialService.getMaterialesDocente(docenteId, filters);
       return successResponse(res, materiales, 'Materiales de clase recuperados exitosamente');
     } catch (error) {
-      return errorResponse(res, error.message, 500);
+      next(error);
     }
   }
 
-  async getMaterialById(req, res) {
+  async getMaterialById(req, res, next) {
     try {
       const docenteId = req.user.id;
       const { id } = req.params;
       const material = await materialService.getMaterialById(id, docenteId);
       return successResponse(res, material, 'Material recuperado correctamente');
     } catch (error) {
-      const status = error.message.includes('autorización') ? 403 : 404;
-      return errorResponse(res, error.message, status);
+      next(error);
     }
   }
 
-  async deleteMaterial(req, res) {
+  async deleteMaterial(req, res, next) {
     try {
       const docenteId = req.user.id;
       const { id } = req.params;
       await materialService.deleteMaterial(id, docenteId);
       return successResponse(res, null, 'Material eliminado exitosamente');
     } catch (error) {
-      const status = error.message.includes('autorización') ? 403 : 404;
-      return errorResponse(res, error.message, status);
+      next(error);
     }
   }
 }

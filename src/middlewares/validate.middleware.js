@@ -74,11 +74,6 @@ export const validateSchema = (schema) => (req, res, next) => {
     });
     next();
   } catch (error) {
-    const formattedErrors = error.errors?.map((e) => ({
-      campo: e.path.join('.'),
-      mensaje: e.message
-    })) || error.message;
-
-    return errorResponse(res, 'Error de validación en los datos de entrada', 400, formattedErrors);
+    next(error);
   }
 };

@@ -1,12 +1,16 @@
 import userRepository from '../repositories/user.repository.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { ConflictError, UnauthorizedError, ForbiddenError } from '../helpers/errors.js';
 
 class AuthService {
   async register(userData) {
     const existingUser = await userRepository.findByEmail(userData.correo_institucional);
     if (existingUser) {
-      throw new Error('El correo institucional ya está registrado');
+      throw new ConflictError(
+        `El correo institucional '${userData.correo_institucional}' ya se encuentra registrado. Utilice otro correo o inicie sesión.`,
+        { correo: userData.correo_institucional }
+      );
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -32,16 +36,19 @@ class AuthService {
   async login(email, password) {
     const user = await userRepository.findByEmail(email);
     if (!user) {
-      throw new Error('Credenciales incorrectas');
+      throw new UnauthorizedError('Credenciales incorrectas: verifique su correo institucional y contraseña.');
     }
 
     const isMatch = await bcrypt.compare(password, user.password_hash);
     if (!isMatch) {
-      throw new Error('Credenciales incorrectas');
+      throw new UnauthorizedError('Credenciales incorrectas: verifique su correo institucional y contraseña.');
     }
 
     if (!user.estado) {
-      throw new Error('Usuario inactivo');
+      throw new ForbiddenError(
+        'Su cuenta de usuario se encuentra inactiva. Comuníquese con la coordinación académica o el administrador del sistema.',
+        { usuario_id: user.id, estado: false }
+      );
     }
 
     const payload = {
@@ -51,7 +58,7 @@ class AuthService {
     };
 
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRES_IN
+      expiresIn: process.env.JWT_EXPIRES_IN || '24h'
     });
 
     return {
