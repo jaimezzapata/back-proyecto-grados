@@ -9,6 +9,8 @@ import materialRoutes from './routers/material.routes.js';
 import { errorHandler } from './middlewares/error.middleware.js';
 
 import { getFeaturesState } from './config/features.js';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './config/swagger.js';
 
 dotenv.config();
 
@@ -18,12 +20,42 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Documentación Swagger / OpenAPI
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  customSiteTitle: 'Documentación API - Generador de Evaluaciones con IA',
+  customCss: '.swagger-ui .topbar { display: none }',
+}));
+app.get('/api/docs.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpec);
+});
+
 // Rutas de la API
 app.use('/api/auth', authRoutes);
 app.use('/api/academic', courseRoutes);
 app.use('/api/materials', materialRoutes);
 
-// Estado de Funcionalidades (Feature Flags / Suscripción)
+/**
+ * @openapi
+ * tags:
+ *   name: Sistema
+ *   description: Estado general, salud del servicio y Feature Flags
+ */
+
+/**
+ * @openapi
+ * /api/features:
+ *   get:
+ *     summary: Consultar estado de los Feature Flags y módulos activos
+ *     tags: [Sistema]
+ *     responses:
+ *       200:
+ *         description: Mapa de características habilitadas/deshabilitadas
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiResponse'
+ */
 app.get('/api/features', (req, res) => {
   res.json({
     success: true,
@@ -32,7 +64,16 @@ app.get('/api/features', (req, res) => {
   });
 });
 
-// Health check
+/**
+ * @openapi
+ * /health:
+ *   get:
+ *     summary: Verificar el estado de salud del servidor
+ *     tags: [Sistema]
+ *     responses:
+ *       200:
+ *         description: Servidor en línea y operativo
+ */
 app.get('/health', (req, res) => {
   res.json({
     success: true,
