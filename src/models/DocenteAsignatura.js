@@ -30,6 +30,22 @@ const DocenteAsignatura = sequelize.define('DocenteAsignatura', {
   grupo: {
     type: DataTypes.STRING(20),
     allowNull: true,
+    defaultValue: '01',
+  },
+  sede: {
+    type: DataTypes.STRING(50),
+    allowNull: false,
+    defaultValue: 'Medellín',
+  },
+  modalidad: {
+    type: DataTypes.STRING(50),
+    allowNull: false,
+    defaultValue: 'Regular',
+  },
+  jornada: {
+    type: DataTypes.STRING(50),
+    allowNull: false,
+    defaultValue: 'Mañana',
   }
 }, {
   tableName: 'docentes_asignaturas',

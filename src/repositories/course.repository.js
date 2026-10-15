@@ -62,21 +62,62 @@ class CourseRepository {
     });
   }
 
-  async asignarDocente(docenteId, asignaturaId, periodoAcademico, grupo = '01') {
+  async asignarDocente(docenteId, asignaturaId, periodoAcademico, grupo = '01', sede = 'Medellín', modalidad = 'Regular', jornada = 'Mañana') {
     return await DocenteAsignatura.findOrCreate({
       where: {
         docente_id: docenteId,
         asignatura_id: asignaturaId,
         periodo_academico: periodoAcademico,
-        grupo
+        grupo,
+        sede,
+        modalidad,
+        jornada
       },
       defaults: {
         docente_id: docenteId,
         asignatura_id: asignaturaId,
         periodo_academico: periodoAcademico,
-        grupo
+        grupo,
+        sede,
+        modalidad,
+        jornada
       }
     });
+  }
+
+  async findAsignacionById(id) {
+    return await DocenteAsignatura.findByPk(id, {
+      include: [
+        {
+          model: Asignatura,
+          as: 'asignatura',
+          include: [{ model: ProgramaAcademico, as: 'programa', attributes: ['id', 'codigo', 'nombre'] }]
+        }
+      ]
+    });
+  }
+
+  async updateAsignacion(id, docenteId, data) {
+    const asignacion = await DocenteAsignatura.findOne({
+      where: { id, docente_id: docenteId }
+    });
+    if (!asignacion) return null;
+    return await asignacion.update(data);
+  }
+
+  async deleteAsignacion(id, docenteId) {
+    const asignacion = await DocenteAsignatura.findOne({
+      where: { id, docente_id: docenteId }
+    });
+    if (!asignacion) return false;
+    await asignacion.destroy();
+    return true;
+  }
+
+  async updateAsignatura(id, data) {
+    const asignatura = await Asignatura.findByPk(id);
+    if (!asignatura) return null;
+    return await asignatura.update(data);
   }
 }
 

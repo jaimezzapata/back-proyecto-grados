@@ -7,10 +7,7 @@ export const registerSchema = z.object({
     apellidos: z.string({ required_error: 'Los apellidos son requeridos' }).min(2, 'Mínimo 2 caracteres'),
     correo_institucional: z
       .string({ required_error: 'El correo es requerido' })
-      .email('Debe ser un correo válido')
-      .refine((val) => val.endsWith('@cesde.edu.co'), {
-        message: 'Debe ser un correo institucional (@cesde.edu.co)',
-      }),
+      .email('Debe ser un correo válido'),
     password: z
       .string({ required_error: 'La contraseña es requerida' })
       .min(8, 'La contraseña debe tener mínimo 8 caracteres')
@@ -31,7 +28,10 @@ export const vincularAsignaturaSchema = z.object({
   body: z.object({
     asignatura_id: z.coerce.number({ required_error: 'El ID de la asignatura es requerido' }).positive(),
     periodo_academico: z.string({ required_error: 'El periodo académico es requerido' }).min(2),
-    grupo: z.string().optional().default('01')
+    grupo: z.string().optional().default('01'),
+    sede: z.string().optional().default('Medellín'),
+    modalidad: z.string().optional().default('Regular'),
+    jornada: z.string().optional().default('Mañana')
   })
 });
 
@@ -47,6 +47,28 @@ export const createAsignaturaSchema = z.object({
     programa_id: z.coerce.number({ required_error: 'El ID del programa es requerido' }).positive(),
     codigo: z.string({ required_error: 'El código de la asignatura es requerido' }).min(2),
     nombre: z.string({ required_error: 'El nombre de la asignatura es requerido' }).min(3),
+    semestre: z.coerce.number().optional()
+  })
+});
+
+export const updateDocenteAsignaturaSchema = z.object({
+  body: z.object({
+    asignatura_id: z.coerce.number().positive().optional(),
+    periodo_academico: z.string().min(2).optional(),
+    grupo: z.string().min(1).optional(),
+    sede: z.string().min(1).optional(),
+    modalidad: z.string().min(1).optional(),
+    jornada: z.string().min(1).optional(),
+    nombre_asignatura: z.string().min(2).optional(),
+    codigo_asignatura: z.string().min(2).optional()
+  })
+});
+
+export const updateAsignaturaSchema = z.object({
+  body: z.object({
+    programa_id: z.coerce.number().positive().optional(),
+    codigo: z.string().min(2).optional(),
+    nombre: z.string().min(3).optional(),
     semestre: z.coerce.number().optional()
   })
 });

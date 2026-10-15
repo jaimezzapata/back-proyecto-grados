@@ -4,8 +4,10 @@ import { authenticateToken, requireRole } from '../middlewares/auth.middleware.j
 import {
   validateSchema,
   vincularAsignaturaSchema,
+  updateDocenteAsignaturaSchema,
   createProgramaSchema,
-  createAsignaturaSchema
+  createAsignaturaSchema,
+  updateAsignaturaSchema
 } from '../middlewares/validate.middleware.js';
 
 const router = Router();
@@ -132,6 +134,76 @@ router.post(
 
 /**
  * @openapi
+ * /api/academic/mis-asignaturas/{id}:
+ *   put:
+ *     summary: Actualizar la configuración de un grupo o modificar la asignatura vinculada
+ *     tags: [Contexto Académico]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de la asignación (DocenteAsignatura)
+ *     responses:
+ *       200:
+ *         description: Asignatura actualizada
+ *       404:
+ *         description: Asignación no encontrada
+ */
+router.put(
+  '/mis-asignaturas/:id',
+  authenticateToken,
+  validateSchema(updateDocenteAsignaturaSchema),
+  courseController.updateMisAsignatura
+);
+
+/**
+ * @openapi
+ * /api/academic/mis-asignaturas/{id}:
+ *   delete:
+ *     summary: Desvincular una asignatura o grupo del docente
+ *     tags: [Contexto Académico]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de la asignación (DocenteAsignatura)
+ *     responses:
+ *       200:
+ *         description: Asignación eliminada exitosamente
+ */
+router.delete(
+  '/mis-asignaturas/:id',
+  authenticateToken,
+  courseController.deleteMisAsignatura
+);
+
+/**
+ * @openapi
+ * /api/academic/asignaturas/{id}:
+ *   put:
+ *     summary: Modificar información de una asignatura (Catálogo)
+ *     tags: [Contexto Académico]
+ *     security:
+ *       - bearerAuth: []
+ */
+router.put(
+  '/asignaturas/:id',
+  authenticateToken,
+  requireRole('ADMINISTRADOR', 'DOCENTE'),
+  validateSchema(updateAsignaturaSchema),
+  courseController.updateAsignatura
+);
+
+/**
+ * @openapi
  * /api/academic/programas:
  *   post:
  *     summary: Crear un nuevo programa académico (Solo Administrador)
@@ -181,7 +253,7 @@ router.post(
 router.post(
   '/asignaturas',
   authenticateToken,
-  requireRole('ADMINISTRADOR'),
+  requireRole('ADMINISTRADOR', 'DOCENTE'),
   validateSchema(createAsignaturaSchema),
   courseController.createAsignatura
 );

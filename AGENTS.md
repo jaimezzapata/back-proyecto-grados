@@ -146,19 +146,19 @@ $$\text{Rutas (routers)} \longrightarrow \text{Middlewares} \longrightarrow \tex
 
 ## 8. Política de Commits Atómicos y Frecuentes (Git)
 
-1. **Obligatoriedad de Commits Atómicos:**
-   * Se debe realizar commit ante cada avance significativo, atómico y probado (ej. nuevo endpoint, corrección de bug, migración de modelo o documentación).
-   * No acumular múltiples responsabilidades en un solo commit.
+1. **Obligatoriedad de Commits y Push a la rama Master:**
+   * **Siempre y de forma obligatoria**, ante cada avance o cambio significativo, modular y atómico (ej. nuevo endpoint, corrección de bug, migración de modelo o documentación), se debe **crear el commit correspondiente y ejecutar inmediatamente `git push origin master`**.
+   * No acumular múltiples responsabilidades en un solo commit ni dejar cambios significativos únicamente en local.
 
 2. **Convención Convencional Estricta:**
    * Formato: `<tipo>(<alcance>): <descripción>`
    * Tipos: `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`, `test:`, `style:`.
 
 3. **Estructura de Repositorios Independientes:**
-   * El proyecto se gestiona exclusivamente a través de dos repositorios Git independientes:
+   * El proyecto se gestiona a través de los repositorios independientes:
      * Backend: `https://github.com/jaimezzapata/back-proyecto-grados.git` (en `backend/`).
      * Frontend: `https://github.com/jaimezzapata/front-proyecto-grados.git` (en `frontend/`).
-   * No se utiliza ni se realizan commits en el repositorio global de la raíz; todo versionamiento se ejecuta directamente dentro de cada proyecto respectivo (`backend/` o `frontend/`).
+   * Todo avance significativo debe versionarse y pushearse a la rama `master` en su repositorio correspondiente.
 
 
 

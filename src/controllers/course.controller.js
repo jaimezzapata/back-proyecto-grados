@@ -70,6 +70,38 @@ class CourseController {
       next(error);
     }
   }
+
+  async updateMisAsignatura(req, res, next) {
+    try {
+      const docenteId = req.user.id;
+      const { id } = req.params;
+      const updated = await courseService.updateAsignacionDocente(docenteId, id, req.body);
+      return successResponse(res, updated, 'Asignatura y configuración de grupo actualizadas correctamente');
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async deleteMisAsignatura(req, res, next) {
+    try {
+      const docenteId = req.user.id;
+      const { id } = req.params;
+      const resultado = await courseService.desvincularDocenteAsignatura(docenteId, id);
+      return successResponse(res, resultado, 'Asignatura desvinculada exitosamente');
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async updateAsignatura(req, res, next) {
+    try {
+      const { id } = req.params;
+      const updated = await courseService.updateAsignatura(id, req.body);
+      return successResponse(res, updated, 'Asignatura actualizada exitosamente');
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new CourseController();
