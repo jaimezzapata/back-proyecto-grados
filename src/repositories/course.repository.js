@@ -15,8 +15,18 @@ class CourseRepository {
     });
   }
 
+  async findProgramaByCodigo(codigo) {
+    return await ProgramaAcademico.findOne({ where: { codigo } });
+  }
+
   async createPrograma(data) {
     return await ProgramaAcademico.create(data);
+  }
+
+  async updatePrograma(id, data) {
+    const programa = await ProgramaAcademico.findByPk(id);
+    if (!programa) return null;
+    return await programa.update(data);
   }
 
   // Asignaturas

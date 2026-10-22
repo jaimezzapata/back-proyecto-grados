@@ -6,6 +6,7 @@ import {
   vincularAsignaturaSchema,
   updateDocenteAsignaturaSchema,
   createProgramaSchema,
+  updateProgramaSchema,
   createAsignaturaSchema,
   updateAsignaturaSchema
 } from '../middlewares/validate.middleware.js';
@@ -206,7 +207,7 @@ router.put(
  * @openapi
  * /api/academic/programas:
  *   post:
- *     summary: Crear un nuevo programa académico (Solo Administrador)
+ *     summary: Crear un nuevo programa académico
  *     tags: [Contexto Académico]
  *     security:
  *       - bearerAuth: []
@@ -220,14 +221,51 @@ router.put(
  *       201:
  *         description: Programa creado
  *       403:
- *         description: Requiere rol ADMINISTRADOR
+ *         description: No autorizado
  */
 router.post(
   '/programas',
   authenticateToken,
-  requireRole('ADMINISTRADOR'),
+  requireRole('ADMINISTRADOR', 'DOCENTE'),
   validateSchema(createProgramaSchema),
   courseController.createPrograma
+);
+
+/**
+ * @openapi
+ * /api/academic/programas/{id}:
+ *   put:
+ *     summary: Actualizar un programa académico existente (código, nombre)
+ *     tags: [Contexto Académico]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               codigo:
+ *                 type: string
+ *               nombre:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Programa académico actualizado exitosamente
+ */
+router.put(
+  '/programas/:id',
+  authenticateToken,
+  requireRole('ADMINISTRADOR', 'DOCENTE'),
+  validateSchema(updateProgramaSchema),
+  courseController.updatePrograma
 );
 
 /**

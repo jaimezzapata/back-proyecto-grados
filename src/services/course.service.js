@@ -50,7 +50,33 @@ class CourseService {
   }
 
   async createPrograma(data) {
+    const existing = await courseRepository.findProgramaByCodigo(data.codigo);
+    if (existing) {
+      throw new ConflictError(
+        `Ya existe un programa académico registrado con el código '${data.codigo}'.`,
+        { codigo: data.codigo }
+      );
+    }
     return await courseRepository.createPrograma(data);
+  }
+
+  async updatePrograma(id, data) {
+    const existing = await courseRepository.findProgramaById(id);
+    if (!existing) {
+      throw new NotFoundError('Programa académico', id);
+    }
+
+    if (data.codigo && data.codigo !== existing.codigo) {
+      const withCode = await courseRepository.findProgramaByCodigo(data.codigo);
+      if (withCode && withCode.id !== Number(id)) {
+        throw new ConflictError(
+          `El código '${data.codigo}' ya está en uso por otro programa académico.`,
+          { codigo: data.codigo }
+        );
+      }
+    }
+
+    return await courseRepository.updatePrograma(id, data);
   }
 
   async createAsignatura(data) {

@@ -62,6 +62,16 @@ class CourseController {
     }
   }
 
+  async updatePrograma(req, res, next) {
+    try {
+      const { id } = req.params;
+      const updated = await courseService.updatePrograma(id, req.body);
+      return successResponse(res, updated, 'Programa académico actualizado exitosamente');
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async createAsignatura(req, res, next) {
     try {
       const nuevaAsignatura = await courseService.createAsignatura(req.body);

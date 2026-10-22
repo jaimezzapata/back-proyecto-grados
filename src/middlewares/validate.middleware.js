@@ -42,6 +42,16 @@ export const createProgramaSchema = z.object({
   })
 });
 
+export const updateProgramaSchema = z.object({
+  params: z.object({
+    id: z.coerce.number({ required_error: 'El ID del programa es requerido' }).positive()
+  }),
+  body: z.object({
+    codigo: z.string().min(2, 'El código debe tener al menos 2 caracteres').optional(),
+    nombre: z.string().min(3, 'El nombre debe tener al menos 3 caracteres').optional()
+  })
+});
+
 export const createAsignaturaSchema = z.object({
   body: z.object({
     programa_id: z.coerce.number({ required_error: 'El ID del programa es requerido' }).positive(),

@@ -112,7 +112,7 @@ ExportacionHistorial.belongsTo(Usuario, { foreignKey: 'docente_id', as: 'docente
 // Sincronización y seeds iniciales
 export const syncDB = async () => {
   try {
-    await sequelize.sync({ alter: true });
+    await sequelize.sync();
     console.log('Base de datos sincronizada correctamente.');
 
     // Semillas iniciales indispensables
