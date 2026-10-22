@@ -103,7 +103,7 @@ export const startServer = async () => {
     await connectDB();
     await syncDB();
 
-    app.listen(PORT, () => {
+    app.listen(PORT, '0.0.0.0', () => {
       console.log(`Servidor corriendo en el puerto ${PORT}`);
     });
   } catch (error) {

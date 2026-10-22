@@ -43,6 +43,17 @@ class CourseController {
     }
   }
 
+  async getDetalleAsignacion(req, res, next) {
+    try {
+      const docenteId = req.user.id;
+      const { id } = req.params;
+      const asignacion = await courseService.getAsignacionById(docenteId, id);
+      return successResponse(res, asignacion, 'Detalle de la asignación obtenido correctamente');
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async vincularAsignatura(req, res, next) {
     try {
       const docenteId = req.user.id;

@@ -108,6 +108,29 @@ router.get('/mis-asignaturas', authenticateToken, courseController.getMisAsignat
 
 /**
  * @openapi
+ * /api/academic/mis-asignaturas/{id}:
+ *   get:
+ *     summary: Obtener el detalle específico de una asignatura/grupo asignado al docente
+ *     tags: [Contexto Académico]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de la asignación docente
+ *     responses:
+ *       200:
+ *         description: Detalle de la asignación obtenido correctamente
+ *       404:
+ *         description: Asignación no encontrada
+ */
+router.get('/mis-asignaturas/:id', authenticateToken, courseController.getDetalleAsignacion);
+
+/**
+ * @openapi
  * /api/academic/vincular-asignatura:
  *   post:
  *     summary: Vincular una asignatura al docente en un periodo y grupo determinado

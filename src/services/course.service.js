@@ -90,6 +90,14 @@ class CourseService {
     return await courseRepository.createAsignatura(data);
   }
 
+  async getAsignacionById(docenteId, asignacionId) {
+    const asignacion = await courseRepository.findAsignacionById(asignacionId);
+    if (!asignacion || asignacion.docente_id !== docenteId) {
+      throw new NotFoundError('Asignación de curso', asignacionId);
+    }
+    return asignacion;
+  }
+
   async updateAsignacionDocente(docenteId, asignacionId, data) {
     const asignacion = await courseRepository.findAsignacionById(asignacionId);
     if (!asignacion || asignacion.docente_id !== docenteId) {

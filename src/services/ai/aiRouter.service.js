@@ -19,7 +19,12 @@ class AIRouterService {
       const response = await fetch(`${this.ollamaUrl}/api/tags`, {
         signal: AbortSignal.timeout(600) // 600 ms máximo
       });
-      return response.ok;
+      if (!response.ok) return false;
+      const data = await response.json();
+      const targetModel = process.env.OLLAMA_MODEL || 'llama3.1:8b';
+      const modelPrefix = targetModel.split(':')[0];
+      const hasModel = data.models?.some(m => m.name === targetModel || m.name.startsWith(modelPrefix));
+      return Boolean(hasModel);
     } catch {
       return false;
     }
